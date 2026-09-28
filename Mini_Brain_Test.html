@@ -1,0 +1,25 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mini Brain Test</title>
+<style>
+body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#dff9fb,#fff3b0);margin:0;padding:18px;text-align:center}.card{max-width:680px;margin:auto;background:#fff;border-radius:28px;padding:25px;box-shadow:0 7px 25px #999}h1{color:#6c5ce7}.sub{color:#555;line-height:1.5}#progress{font-weight:bold;color:#e17055;margin:18px}.question{font-size:23px;font-weight:bold;line-height:1.5;margin:20px 0}.option{display:block;width:90%;margin:10px auto;padding:14px;border:0;border-radius:15px;background:#74b9ff;color:#fff;font-size:20px;cursor:pointer;box-shadow:0 4px #0984e3}.option:disabled{opacity:.7}#feedback{min-height:38px;font-size:20px;font-weight:bold;margin:12px}#next{display:none;background:#55efc4;color:#145a32;box-shadow:0 4px #00b894}.result{font-size:21px;line-height:1.6}.big{font-size:48px;font-weight:bold;color:#e17055}.bar{text-align:left;margin:12px 0}.track{height:18px;background:#eee;border-radius:10px;overflow:hidden}.fill{height:100%;background:#6c5ce7}
+</style></head><body><div class="card"><h1>🧠 Mini Brain Test ☁️</h1><div class="sub"><b>Mini Tes Penalaran</b><br>Mem Dela · Kelas 2 · SD Negeri 71 Maluku Tengah</div><div id="app"></div></div>
+<script>
+const qs=[
+["Pola","2, 6, 12, 20, 30, ... Angka berikutnya?",["40","42","44","46"],1],
+["Logika","Semua bunga di taman berwarna merah. Mawar adalah bunga di taman. Kesimpulan yang pasti?",["Semua mawar merah","Sebagian mawar merah","Mawar bukan bunga","Tidak bisa diketahui"],0],
+["Pola","A, C, F, J, O, ... Huruf berikutnya?",["T","U","V","W"],1],
+["Bahasa","Buku : Membaca = Sendok : ...",["Menulis","Memotong","Makan","Memasak"],2],
+["Problem Solving","Semua label tiga kotak salah: APEL, JERUK, APEL + JERUK. Kamu hanya boleh mengambil satu buah. Dari kotak mana?",["Kotak APEL","Kotak JERUK","Kotak APEL + JERUK"],2],
+["Numerik","5 anak masing-masing mendapat 3 pensil. Lalu 4 pensil hilang. Berapa pensil tersisa?",["9","10","11","12"],2],
+["Memori","Ingat: 7 – 2 – 9 – 4 – 6. Mana urutan dari belakang ke depan?",["6 – 4 – 9 – 2 – 7","6 – 4 – 2 – 9 – 7","7 – 2 – 9 – 4 – 6","4 – 6 – 9 – 2 – 7"],0],
+["Bahasa","Mana yang berbeda?",["Apel","Mangga","Wortel","Jeruk"],2],
+["Pola","Jika 3 → 9, 4 → 16, 5 → 25, maka 7 → ?",["35","42","49","56"],2],
+["Problem Solving","Game berjalan, tetapi tombol Soal Berikutnya tidak bekerja. Apa yang paling masuk akal dilakukan dulu?",["Hapus seluruh game","Cari bagian kode yang mengatur tombol","Ganti warna tombol","Buat game baru"],1]
+];
+let i=0,score=0,answered=false,by={Pola:[0,0],Logika:[0,0],Bahasa:[0,0],"Problem Solving":[0,0],Numerik:[0,0],Memori:[0,0]};
+function speak(t){if("speechSynthesis"in window){let s=new SpeechSynthesisUtterance(t);s.lang="id-ID";speechSynthesis.cancel();speechSynthesis.speak(s)}}
+function show(){answered=false;let x=qs[i];document.getElementById("app").innerHTML='<div id="progress">Soal '+(i+1)+' dari 10</div><div class="question">'+x[1]+'</div><div id="opts"></div><div id="feedback"></div><button class="option" id="next" onclick="next()">➡️ Soal Berikutnya</button>';x[2].forEach((v,n)=>{let b=document.createElement("button");b.className="option";b.textContent=v;b.onclick=()=>answer(n,b);document.getElementById("opts").appendChild(b)})}
+function answer(n,b){if(answered)return;let x=qs[i];by[x[0]][1]++;if(n===x[3]){score++;by[x[0]][0]++;answered=true;document.getElementById("feedback").textContent="🎉 Benar!";speak("Hebat! Jawabanmu benar!");document.querySelectorAll("#opts button").forEach(z=>z.disabled=true);document.getElementById("next").style.display="block"}else{document.getElementById("feedback").textContent="🌸 Belum tepat. Coba lagi!";speak("Belum tepat. Coba lagi!");b.disabled=true}}
+function next(){i++;i<qs.length?show():result()}
+function result(){let cats=Object.entries(by).map(([k,v])=>({k,p:v[1]?Math.round(v[0]/v[1]*100):0})).sort((a,b)=>b.p-a.p);let top=cats.filter(x=>x.p===cats[0].p).map(x=>x.k).join(" & ");document.getElementById("app").innerHTML='<div class="result"><div style="font-size:70px">🏆🧠✨</div><h2>Hasil Tes</h2><div class="big">'+score+' / 10</div><p><b>Bagian yang paling kuat dalam tes ini:</b><br>🎯 '+top+'</p>'+cats.map(x=>'<div class="bar"><b>'+x.k+' — '+x.p+'%</b><div class="track"><div class="fill" style="width:'+x.p+'%"></div></div></div>').join("")+'<p style="font-size:15px;color:#666">Ini bukan tes IQ resmi. Ini hanya gambaran performa pada 10 soal.</p><button class="option" onclick="location.reload()">🔄 Coba Lagi</button></div>';speak("Tes selesai. Skormu "+score+" dari 10.")}
+show();
+</script></body></html>
